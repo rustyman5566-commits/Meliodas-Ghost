@@ -13,10 +13,9 @@ How to set up locally
 2. Open `index.html` in a browser to preview.
 
 Deploy to GitHub Pages
-1. Files are already pushed to the `east-customs-site` branch of your repository.
-2. Merge the branch into `main` (or change Pages source to `east-customs-site`).
-3. In the repo Settings → Pages, set the site source to the branch you want and folder `/ (root)`.
-4. Wait a minute and visit the provided Pages URL (usually `https://<your-username>.github.io/<repo>/`).
+1. Merge the branch east-customs-site into `main` (or set Pages source to `east-customs-site`).
+2. In the repo Settings → Pages, set the site source to the branch you want and folder `/ (root)`.
+3. Wait a minute and visit the provided Pages URL (usually `https://<your-username>.github.io/<repo>/`).
 
 Customization
 - I can hook up a proper contact form (Formspree or Netlify Forms).

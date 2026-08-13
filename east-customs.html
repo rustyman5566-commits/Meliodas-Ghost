@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>East Customs POS v1.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --panel-bg: rgba(20, 20, 20, 0.75);
+            --text: #f0f0f0;
+            --text-secondary: #b0b0b0;
+            --accent: #00cc66;
+            --accent-glow: rgba(0, 204, 102, 0.4);
+            --gold: #00d9ff;
+            --border: rgba(255, 255, 255, 0.08);
+            --button-bg: rgba(30, 30, 30, 0.8);
+            --glass-blur: blur(12px);
+            --sidebar-width: 360px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Michroma', sans-serif; background: radial-gradient(ellipse at 50% 30%, #1a1a1a 0%, #0a0a0a 70%); color: var(--text); display: flex; height: 100vh; overflow: hidden; user-select: none; position: relative; letter-spacing: 0.3px; }
+        #splashScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a0a0a; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.6s ease; }
+        .splash-logo { font-size: 4rem; color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); letter-spacing: 8px; animation: fadeInOut 2.8s ease forwards; }
+        @keyframes fadeInOut { 0% { opacity: 0; transform: scale(0.95); } 25% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; transform: scale(1.05); } }
+        .sidebar, .main .order-list, .totals-section, .policies-panel { backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); background: var(--panel-bg); border: 1px solid var(--border); }
+        .sidebar { width: var(--sidebar-width); min-width: var(--sidebar-width); display: flex; flex-direction: column; overflow-y: auto; padding: 0.8rem; gap: 0.6rem; transition: transform 0.3s ease; z-index: 20; border-right: 1px solid var(--border); border-radius: 0 16px 16px 0; }
+        .sidebar h2 { font-size: 1.6rem; text-align: center; color: var(--accent); margin-bottom: 0.2rem; letter-spacing: 2px; border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; text-transform: uppercase; font-weight: 400; text-shadow: 0 0 10px var(--accent-glow); }
+        .category { margin-bottom: 0.3rem; }
+        .cat-header { font-weight: 400; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; padding: 0.3rem 0.8rem; border-radius: 4px; margin-bottom: 0.3rem; color: white; display: inline-block; background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+        .button-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+        .menu-btn { background: var(--button-bg); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text); border-radius: 8px; padding: 10px 12px; font-size: 0.8rem; font-weight: 400; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; flex: 1 1 auto; min-width: 100px; text-align: left; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); letter-spacing: 0.4px; }
+        .menu-btn:hover { background: rgba(50, 50, 50, 0.8); border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); transform: translateY(-1px); }
+        .menu-btn .price { font-weight: 400; font-size: 1rem; color: var(--gold); }
+        .menu-btn .note-small { font-size: 0.65rem; color: #999; font-style: italic; }
+        .menu-btn[data-cat="package"] { border-left: 3px solid #00cc66; }
+        .menu-btn[data-cat="visual"] { border-left: 3px solid #0099ff; }
+        .menu-btn[data-cat="perf"] { border-left: 3px solid #00d9ff; }
+        .menu-btn[data-cat="armor"] { border-left: 3px solid #33ff99; }
+        .menu-btn[data-cat="repair"] { border-left: 3px solid #00ff88; }
+        .menu-btn[data-cat="tow"] { border-left: 3px solid #0088ff; }
+        .main { flex: 1; display: flex; flex-direction: column; padding: 1.2rem; overflow-y: auto; position: relative; border-radius: 16px 0 0 16px; margin: 8px; background: transparent; }
+        .order-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        .order-header h1 { font-size: 1.8rem; color: var(--text); text-transform: uppercase; letter-spacing: 3px; border-left: 4px solid var(--accent); padding-left: 1rem; font-weight: 400; text-shadow: 0 0 12px var(--accent-glow); }
+        .header-meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .shift-total-badge { background: rgba(0, 204, 102, 0.2); border: 1px solid var(--accent); border-radius: 20px; padding: 0.2rem 0.8rem; font-size: 0.8rem; color: var(--accent); letter-spacing: 1px; backdrop-filter: blur(4px); }
+        .customer-input { display: flex; align-items: center; gap: 0.5rem; background: rgba(30,30,30,0.6); padding: 0.4rem 0.8rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px); }
+        .customer-input input { background: transparent; border: none; color: white; font-family: 'Michroma', sans-serif; font-size: 0.9rem; width: 180px; outline: none; padding: 0.3rem; letter-spacing: 0.5px; }
+        .clear-btn { background: rgba(40,40,40,0.7); border: 1px solid rgba(255,255,255,0.15); color: #ddd; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 400; font-family: 'Michroma', sans-serif; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(4px); }
+        .clear-btn:hover { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 0 15px var(--accent-glow); }
+        .order-list { flex: 1; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; overflow-y: auto; min-height: 200px; }
+        .order-item { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.3rem; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.9rem; color: var(--text); }
+        .qty-btn { background: rgba(51,51,51,0.8); border: 1px solid rgba(255,255,255,0.1); color: white; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .qty-btn:hover { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+        .item-price { font-weight: 400; min-width: 90px; text-align: right; color: var(--gold); font-size: 1rem; }
+        .remove-item { background: none; border: none; color: #ff5555; font-size: 1.3rem; cursor: pointer; opacity: 0.8; transition: 0.2s; }
+        .remove-item:hover { opacity: 1; transform: scale(1.2); }
+        .empty-order { text-align: center; color: #555; margin-top: 2rem; font-style: italic; }
+        .totals-section { border-radius: 12px; padding: 1rem; margin-bottom: 0.5rem; }
+        .totals-line { display: flex; justify-content: space-between; font-size: 1rem; margin-bottom: 0.4rem; color: var(--text-secondary); }
+        .totals-line.total { font-size: 2rem; font-weight: 400; color: var(--accent); border-top: 2px solid var(--accent); padding-top: 0.8rem; margin-top: 0.5rem; text-transform: uppercase; text-shadow: 0 0 15px var(--accent-glow); }
+        .action-buttons { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+        .action-btn { background: rgba(30,30,30,0.8); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.7rem 1.2rem; border-radius: 8px; font-weight: 400; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; backdrop-filter: blur(6px); font-family: 'Michroma', sans-serif; }
+        .action-btn:hover { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+        .copy-btn { background: var(--accent); border-color: var(--accent); color: white; }
+        .copy-btn:hover { background: #00aa55; box-shadow: 0 0 20px var(--accent-glow); }
+        .policies-panel { border-radius: 12px; padding: 0.8rem; margin-top: 0.5rem; font-size: 0.7rem; color: var(--text-secondary); }
+        .policies-toggle { background: none; border: none; color: var(--accent); font-weight: 400; cursor: pointer; font-size: 0.8rem; width: 100%; text-align: left; padding: 0.3rem; text-transform: uppercase; letter-spacing: 1px; font-family: 'Michroma', sans-serif; }
+        .policies-content { display: none; margin-top: 0.5rem; }
+        .policies-content.open { display: block; }
+        .policy-item { margin-bottom: 0.3rem; padding-left: 1.2rem; position: relative; color: #bbb; line-height: 1.4; }
+        .policy-item::before { content: "▸"; color: var(--accent); position: absolute; left: 0; }
+        .menu-toggle { display: none; background: var(--accent); border: none; color: white; font-weight: 400; font-family: 'Michroma', sans-serif; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; position: fixed; top: 10px; left: 10px; z-index: 30; box-shadow: 0 0 20px var(--accent-glow); }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 15; }
+        @media (max-width: 800px) { body { flex-direction: column; padding-top: 50px; } .menu-toggle { display: block; } .sidebar { position: fixed; top: 0; left: 0; height: 100%; transform: translateX(-100%); box-shadow: 2px 0 30px rgba(0,0,0,0.9); z-index: 25; padding-top: 60px; border-radius: 0; } .sidebar.open { transform: translateX(0); } .sidebar-overlay.active { display: block; } .main { width: 100%; padding: 0.8rem; margin: 4px; } }
+    </style>
+</head>
+<body>
+    <div id="splashScreen"><div class="splash-logo">EAST</div></div>
+    <button class="menu-toggle" id="menuToggle">☰ EAST MENU</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar"><h2>East Customs</h2></div>
+    <div class="main">
+        <div class="order-header">
+            <h1>ORDER</h1>
+            <div class="header-meta">
+                <div class="shift-total-badge" id="shiftTotalDisplay">Shift Total: $0</div>
+                <div class="customer-input">
+                    <span>👤</span>
+                    <input type="text" id="customerName" placeholder="Customer / Plate" autocomplete="off">
+                </div>
+                <button class="clear-btn" id="clearOrderBtn">🗑 Clear</button>
+            </div>
+        </div>
+        <div class="order-list" id="orderListContainer"><div class="empty-order">No items yet. Click a service to start.</div></div>
+        <div class="totals-section"><div class="totals-line total"><span>TOTAL:</span> <span id="totalDisplay">$0</span></div></div>
+        <div class="action-buttons">
+            <button class="action-btn copy-btn" id="copyQuoteBtn">📋 Copy Quote</button>
+            <button class="action-btn" id="printFriendlyBtn">🖨 Print</button>
+            <button class="action-btn" id="fullscreenBtn">📺 Fullscreen</button>
+        </div>
+        <div class="policies-panel">
+            <button class="policies-toggle" id="policiesToggle">📌 East Customs Notes</button>
+            <div class="policies-content" id="policiesContent">
+                <div class="policy-item"><strong>Payment:</strong> All services collected upfront.</div>
+                <div class="policy-item"><strong>Armor:</strong> Default Level 3. Level 5 on request.</div>
+                <div class="policy-item"><strong>Service Vehicles:</strong> No paint or livery mods.</div>
+                <div class="policy-item"><strong>Pricing:</strong> Flat rate whether installing or selling parts.</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function() {
+            const splash = document.getElementById('splashScreen');
+            window.addEventListener('load', () => { setTimeout(() => { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 600); }, 2900); });
+            let audioCtx = null;
+            function initAudio() { if (audioCtx) return; try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} }
+            function playClick() { if (!audioCtx) { initAudio(); if (!audioCtx) return; } if (audioCtx.state === 'suspended') audioCtx.resume(); const now = audioCtx.currentTime; const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = 'sine'; osc.frequency.setValueAtTime(1800, now); osc.frequency.exponentialRampToValueAtTime(1200, now + 0.02); gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + 0.03); }
+            const menuCategories = [{name: "Full Packages", catKey: "package", items: [{name: "Full Upgrade (All Perf + Visuals + Armor)", price: 650000, type: "package", multiple: false}, {name: "Full Upgrade (No Armor)", price: 550000, type: "package", multiple: false}, {name: "Max Performance + Armor", price: 350000, type: "package", multiple: false}, {name: "Max Performance (No Armor)", price: 250000, type: "package", multiple: false}, {name: "Max Visuals", price: 250000, type: "package", multiple: false}]}, {name: "Visual Upgrades", catKey: "visual", items: [{name: "Visual Mod", price: 25000, type: "visual", multiple: true, note: "per mod"}, {name: "Full Neons", price: 125000, type: "visual", multiple: false}, {name: "Headlights", price: 50000, type: "visual", multiple: false}]}, {name: "Performance", catKey: "perf", items: [{name: "Engine Upgrade", price: 50000, type: "perf", multiple: false}, {name: "Turbo Upgrade", price: 100000, type: "perf", multiple: false}, {name: "Brakes", price: 30000, type: "perf", multiple: false}, {name: "Transmission", price: 30000, type: "perf", multiple: false}, {name: "Suspension", price: 30000, type: "perf", multiple: false}]}, {name: "Armor", catKey: "armor", items: [{name: "Armor", price: 100000, type: "armor", multiple: false}]}, {name: "Repairs", catKey: "repair", items: [{name: "Vehicle Repair", price: 10000, type: "repair", multiple: true}, {name: "Tire Repair", price: 5000, type: "repair", multiple: true}]}, {name: "Tow Services", catKey: "tow", items: [{name: "Tow Service", price: 50000, type: "tow", multiple: false}]}];
+            let order = [], sessionTotal = 0;
+            const sidebarEl = document.getElementById('sidebar'), orderListContainer = document.getElementById('orderListContainer'), totalDisplay = document.getElementById('totalDisplay'), shiftTotalDisplay = document.getElementById('shiftTotalDisplay'), customerNameInput = document.getElementById('customerName'), clearOrderBtn = document.getElementById('clearOrderBtn'), copyQuoteBtn = document.getElementById('copyQuoteBtn'), fullscreenBtn = document.getElementById('fullscreenBtn'), policiesToggle = document.getElementById('policiesToggle'), policiesContent = document.getElementById('policiesContent'), menuToggle = document.getElementById('menuToggle'), sidebarOverlay = document.getElementById('sidebarOverlay');
+            function formatCurrency(amount) { return '$' + amount.toLocaleString('en-US'); }
+            function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
+            function renderSidebar() { sidebarEl.innerHTML = '<h2>East Customs</h2>'; menuCategories.forEach(cat => { const catDiv = document.createElement('div'); catDiv.className = 'category'; catDiv.innerHTML = `<div class="cat-header">${cat.name}</div><div class="button-grid" id="grid-${cat.catKey}"></div>`; sidebarEl.appendChild(catDiv); const grid = catDiv.querySelector('.button-grid'); cat.items.forEach(item => { const btn = document.createElement('button'); btn.className = 'menu-btn'; btn.setAttribute('data-cat', cat.catKey); btn.innerHTML = `<span>${item.name}</span><span class="price">${formatCurrency(item.price)}</span>`; btn.addEventListener('click', () => { playClick(); addItem(item, cat.catKey, btn); }); grid.appendChild(btn); }); }); }
+            function addItem(item, catKey, buttonElement) { if (!item.multiple) { const exists = order.find(o => o.name === item.name); if (exists) { if (buttonElement) { buttonElement.classList.add('duplicate-shake'); setTimeout(() => buttonElement.classList.remove('duplicate-shake'), 300); } return; } } else { const existing = order.find(o => o.name === item.name); if (existing) { existing.qty += 1; renderOrder(); return; } } order.push({ id: generateId(), name: item.name, price: item.price, qty: 1, catKey: catKey }); renderOrder(); }
+            function removeItem(id) { order = order.filter(o => o.id !== id); renderOrder(); }
+            function changeQty(id, delta) { const item = order.find(o => o.id === id); if (!item) return; item.qty += delta; if (item.qty <= 0) { removeItem(id); return; } renderOrder(); }
+            function renderOrder() { if (order.length === 0) { orderListContainer.innerHTML = '<div class="empty-order">No items yet. Click a service to start.</div>'; } else { orderListContainer.innerHTML = order.map(o => { const lineTotal = o.price * o.qty; return `<div class="order-item"><span class="name">${o.name}</span><div class="qty-control"><button class="qty-btn" data-action="decr" data-id="${o.id}">−</button><span>${o.qty}</span><button class="qty-btn" data-action="incr" data-id="${o.id}">+</button></div><span class="item-price">${formatCurrency(lineTotal)}</span><button class="remove-item" data-id="${o.id}">✕</button></div>`; }).join(''); document.querySelectorAll('.qty-btn').forEach(btn => btn.addEventListener('click', () => { playClick(); changeQty(btn.getAttribute('data-id'), btn.getAttribute('data-action') === 'incr' ? 1 : -1); })); document.querySelectorAll('.remove-item').forEach(btn => btn.addEventListener('click', () => { playClick(); removeItem(btn.getAttribute('data-id')); })); } updateTotal(); }
+            function updateTotal() { totalDisplay.textContent = formatCurrency(order.reduce((s, o) => s + o.price * o.qty, 0)); }
+            clearOrderBtn.addEventListener('click', () => { playClick(); if (order.length === 0 || confirm('Clear order?')) { order = []; renderOrder(); } });
+            copyQuoteBtn.addEventListener('click', () => { playClick(); const customer = customerNameInput.value.trim(); if (order.length === 0) { alert('No items to quote.'); return; } const itemsList = order.map(o => o.qty > 1 ? `${o.qty}x ${o.name}` : o.name).join(', '); const total = order.reduce((s, o) => s + o.price * o.qty, 0); const quote = `East Customs Quote${customer ? ' for ' + customer : ''}: ${itemsList} – TOTAL: ${formatCurrency(total)}`; navigator.clipboard.writeText(quote).then(() => { sessionTotal += total; shiftTotalDisplay.textContent = 'Shift Total: ' + formatCurrency(sessionTotal); alert('Quote copied!'); order = []; renderOrder(); }).catch(() => prompt('Copy manually:', quote)); });
+            document.getElementById('printFriendlyBtn').addEventListener('click', () => { playClick(); const customer = customerNameInput.value.trim() || 'Customer'; const total = order.reduce((s,o) => s + o.price*o.qty, 0); let html = `<h2>East Customs Order - ${customer}</h2><p>${new Date().toLocaleString()}</p><ul>`; order.forEach(o => html += `<li>${o.qty}x ${o.name} - ${formatCurrency(o.price*o.qty)}</li>`); html += `</ul><h3>TOTAL: ${formatCurrency(total)}</h3>`; const w = window.open('','_blank'); w.document.write(`<html><head><title>East Customs Order</title></head><body style="font-family:Michroma,sans-serif;">${html}</body></html>`); w.document.close(); w.print(); });
+            fullscreenBtn.addEventListener('click', () => { playClick(); if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(() => alert('Fullscreen not supported.')); } else { document.exitFullscreen(); } });
+            menuToggle.addEventListener('click', () => { playClick(); sidebarEl.classList.contains('open') ? sidebarEl.classList.remove('open') : sidebarEl.classList.add('open'); });
+            sidebarOverlay.addEventListener('click', () => { playClick(); sidebarEl.classList.remove('open'); });
+            policiesToggle.addEventListener('click', () => { playClick(); policiesContent.classList.toggle('open'); });
+            renderSidebar();
+            renderOrder();
+        })();
+    </script>
+</body>
+</html>

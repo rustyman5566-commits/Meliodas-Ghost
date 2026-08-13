@@ -5,21 +5,18 @@ This is a ready-to-deploy static site for "East Customs". It was rebuilt from sc
 Included files:
 - index.html — main site
 - styles.css — theme and layout styles
-- assets/logo.svg — vector logo used in the site (replace with your PNG if you prefer)
+- assets/logo.png — uploaded PNG logo used in the site
 - assets/favicon.png — optional small favicon (create or replace)
 
 How to set up locally
 1. Clone the repository or download the files.
-2. (Optional) Replace `assets/logo.svg` with your uploaded PNG saved as `assets/logo.png` and update `index.html`/`styles.css` references if needed.
-3. Open `index.html` in a browser to preview.
+2. Open `index.html` in a browser to preview.
 
 Deploy to GitHub Pages
-1. Files are already pushed to the `main` branch of your repository.
-2. In the repo Settings → Pages, set the site source to branch `main` and folder `/ (root)`.
-3. Wait a minute and visit the provided Pages URL (usually `https://<your-username>.github.io/<repo>/`).
-
-Want me to swap in the PNG logo you uploaded?
-- I can replace `assets/logo.svg` with the original PNG (as `assets/logo.png`) and update references — tell me and I'll commit that change.
+1. Files are already pushed to the `east-customs-site` branch of your repository.
+2. Merge the branch into `main` (or change Pages source to `east-customs-site`).
+3. In the repo Settings → Pages, set the site source to the branch you want and folder `/ (root)`.
+4. Wait a minute and visit the provided Pages URL (usually `https://<your-username>.github.io/<repo>/`).
 
 Customization
 - I can hook up a proper contact form (Formspree or Netlify Forms).

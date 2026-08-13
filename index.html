@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>East Customs — Automotive & Custom Shops</title>
+  <meta name="description" content="East Customs — Custom automotive work, fabrication, and repairs. Green & blue themed site." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="assets/favicon.png" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#home">
+        <img src="assets/logo.png" alt="East Customs logo" class="logo" />
+        <span class="brand-text">East Customs</span>
+      </a>
+
+      <button id="menuToggle" class="menu-toggle" aria-label="Toggle menu">☰</button>
+
+      <nav class="site-nav" id="siteNav" aria-label="Primary">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="container hero-inner">
+        <div class="hero-text">
+          <h1>East Customs</h1>
+          <p class="lead">Custom fabrication, performance upgrades, and full-service automotive work — built with precision and pride.</p>
+          <p class="cta-row">
+            <a class="btn primary" href="#contact">Request a Quote</a>
+            <a class="btn outline" href="#services">Our Services</a>
+          </p>
+        </div>
+        <div class="hero-image" aria-hidden="true">
+          <img src="assets/logo.png" alt="" />
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="section services">
+      <div class="container">
+        <h2>Services</h2>
+        <div class="grid services-grid">
+          <article class="card">
+            <h3>Custom Fabrication</h3>
+            <p>Roll cages, brackets, mounts, and metalwork tailored to your needs.</p>
+          </article>
+          <article class="card">
+            <h3>Performance</h3>
+            <p>Tune-ups, exhaust, intake, suspension upgrades, and dyno-friendly builds.</p>
+          </article>
+          <article class="card">
+            <h3>Repair & Maintenance</h3>
+            <p>Full-service diagnostics, brakes, alignment, and general repairs.</p>
+          </article>
+          <article class="card">
+            <h3>Restoration</h3>
+            <p>Bodywork, paint coordination, parts sourcing, and restoration management.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section about">
+      <div class="container">
+        <h2>About East Customs</h2>
+        <p>East Customs is a hands-on shop focused on custom solutions and high-quality workmanship. We work with drivers and builders to make custom projects reliable and road-ready.</p>
+        <ul class="meta-list">
+          <li><strong>Location:</strong> <span>123 Custom Ave, Your City</span></li>
+          <li><strong>Hours:</strong> <span>Mon–Fri 9am–6pm</span></li>
+          <li><strong>Phone:</strong> <span>(555) 555-5555</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact">
+      <div class="container">
+        <h2>Contact</h2>
+        <p>Ready to start your project? Send us a message or call to schedule an estimate.</p>
+
+        <div class="contact-grid">
+          <div class="contact-card">
+            <h3>Get in touch</h3>
+            <p>Email us or use the link below to open your mail client.</p>
+            <a class="btn primary" href="mailto:info@eastcustoms.example?subject=Project%20Inquiry">Email East Customs</a>
+            <p class="muted">Or call: <a href="tel:+15555555555">(555) 555-5555</a></p>
+          </div>
+
+          <div class="contact-card">
+            <h3>Quick message</h3>
+            <form action="mailto:info@eastcustoms.example" method="post" enctype="text/plain" class="contact-form">
+              <label>
+                <span>Name</span>
+                <input name="Name" required />
+              </label>
+              <label>
+                <span>Email</span>
+                <input name="Email" type="email" required />
+              </label>
+              <label>
+                <span>Message</span>
+                <textarea name="Message" rows="4" required></textarea>
+              </label>
+              <div class="form-row">
+                <button class="btn primary" type="submit">Send</button>
+                <button class="btn outline" type="reset">Reset</button>
+              </div>
+              <p class="muted small">Note: This uses mailto. If you want a server form (Formspree, Netlify Forms), I can add that.</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> East Customs — All rights reserved.</p>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // small script for toggling mobile nav and year
+    document.getElementById('menuToggle').addEventListener('click', function () {
+      document.getElementById('siteNav').classList.toggle('open');
+    });
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
